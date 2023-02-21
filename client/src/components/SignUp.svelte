@@ -8,7 +8,7 @@
         <form  action="http://localhost:5678/register" method="POST">
             <div class="formLine">
                 <label for="username">Username</label>
-                <input type="text" name="username" id="username" />
+                <input type="text" name="username" id="username" maxlength="16" placeholder="Max 16 characters"/>
             </div>
             <div class="formLine">
                 <label for="email">Email</label>

@@ -1,5 +1,6 @@
 <script>
   import SignInMain from "./components/SignInMain.svelte";
+  import Profile from "./components/Settings.svelte";
 
   let signInMainOpen = false;
 
@@ -27,6 +28,18 @@
     }
   });
 
+  // Open Profile
+
+  let profileOpen = false;
+
+  const openProfile = () => {
+    if (profileOpen){
+      profileOpen = false;
+    } else {
+      profileOpen = true;
+    }
+  }
+
 </script>
 
 <main>
@@ -38,13 +51,23 @@
     </div>
 
     {#if loggedIn}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-missing-attribute -->
-    <a href="http://localhost:5678/logout">
-      <div class="openLogin">
-        <p>Log out</p>
+    <div class="flex" style="width: 20vw; justify-content:space-between">
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-missing-attribute -->
+      <div on:click={openProfile} class="flex">
+        <div class="profileImg">
+        </div>
+        <h3>{username}</h3>
       </div>
-    </a>
+
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-missing-attribute -->
+      <a href="http://localhost:5678/logout">
+        <div class="openLogin">
+          <p>Log out</p>
+        </div>
+      </a>
+    </div>
     {:else}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-missing-attribute -->
@@ -53,19 +76,6 @@
     </div>
     {/if}
   </div>
-
-    <!-- This div will be toggled on and off-->
-    <div style="positon:relative;">
-        {#if signInMainOpen}
-        <div class="signInMain">
-            <button on:click={toggleSignIn}>Close</button>
-            <div><SignInMain /></div>
-            
-        </div>
-        {/if}
-    </div>
-    <!-- End of toggled div -->
-
     <div>
         {#if loggedIn}
             <h1>Hello, {username}</h1>
@@ -74,6 +84,29 @@
         {/if}
 
     </div>
+
+<!-------------------------------------------------------------->
+<!-----------------Divs that toggle on and off------------------>
+<!-------------------------------------------------------------->
+
+  <div style="positon:relative;">
+    {#if signInMainOpen}
+      <div class="signInMain">
+        <button on:click={toggleSignIn}>Close</button>
+        <div><SignInMain /></div>
+          
+      </div>
+    {/if}
+  </div>
+  
+  <div style="positon:relative;">
+    {#if profileOpen}
+      <div class="profileMain">
+        <button on:click={openProfile}><div><div class="cross1"></div><div class="cross2"></div></div></button>
+        <div><Profile /></div>
+      </div>
+    {/if}
+  </div>
 </main>
 
 <style>
@@ -135,5 +168,57 @@
   a {
     text-decoration: none;
     color: var(--textColor);
+  }
+
+  .profileImg {
+    width: 50px;
+    height: 50px;
+    background-color: var(--accentColor2);
+    border-radius: 50%;
+    margin-right: 1em;
+  }
+  .flex {
+    display: flex;
+  }
+
+  .profileMain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--accentColor);
+    z-index: 1;
+  }
+
+  .profileMain > button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 2em;
+    height: 50px;
+    width: 50px;
+  }
+
+  .profileMain > button > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .profileMain > button > div > div {
+    position: absolute;
+    padding: 2px;
+    background-color: white;
+    height: 2px;
+    width: 30px;
+  }
+
+  .cross1 {
+    transform: rotate(45deg);
+  }
+  .cross2 {
+    transform: rotate(-45deg);
   }
 </style>

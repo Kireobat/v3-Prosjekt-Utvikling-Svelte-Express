@@ -1,0 +1,28 @@
+<script>
+
+    const options = ["Change your profile picture", "Change your username", "Change your description"]
+
+    const uploadFile = () => {
+        
+    }
+
+</script>
+<article>
+    <h2>Your Profile</h2>
+
+    <div class="optionsGrid">
+        {#each options as option}
+            <div>
+                <p>{option}</p>
+                {#if (option == options[0])}
+                    <form on:submit|preventDefault={uploadFile}>
+                        <input type="file" name="filename">
+                        <button type="submit">Upload</button>
+                    </form>
+                {/if}
+            </div>
+        {/each}
+    </div>
+
+</article>
+<style></style>

@@ -31,6 +31,14 @@ app.use(cors());
 
 // Routing and Handlers
 
+
+app.post('/upload', (req, res) => {
+	console.log(req.query.filename);
+
+	res.redirect("http://localhost:5173/")
+});
+
+
 app.get('/', (req, res) => {
 	res.status(200).json({
 		message: '📦 Svelte Express Boilerplate 📦',
@@ -77,6 +85,16 @@ app.post('/login', (req, res) => {
 
 	res.cookie('loggedIn', true);
 	res.cookie('username', username.username);
+
+	let isAdmin;
+
+	statment = db.prepare("SELECT isAdmin FROM users WHERE email = ?");
+	isAdmin = statment.get(email); // checks if user is admin
+
+	if (isAdmin.isAdmin == 1) {
+		res.cookie('isAdmin', true);
+	}
+
   
 	res.redirect("http://localhost:5173/");
   
