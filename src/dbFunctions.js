@@ -54,10 +54,10 @@ multipleInsert = (table,columns,values) => {
     console.log("Last inserted ID: " + info.lastInsertRowid);
 }
 
-Delete = (id) => {
+Delete = (table,id,value) => {
     console.log("Deleting:");
-    const sql = db.prepare("DELETE FROM msgTable WHERE id = ?");
-    const info = sql.run(id);
+    const sql = db.prepare("DELETE FROM "+table+" WHERE "+id+" = ?");
+    const info = sql.run(value);
     console.log("Amount of changes done: " + info.changes);
     console.log("Last inserted ID: " + info.lastInsertRowid);
 }
@@ -70,6 +70,14 @@ deleteAll = () => {
     console.log("Last inserted ID: " + info.lastInsertRowid);
 }
 
+update = (table,id,value,column,newValue) => {
+    console.log("Updating:");
+    const sql = db.prepare("UPDATE "+table+" SET "+column+" = ? WHERE "+id+" = ?");
+    const info = sql.run(newValue,value);
+    console.log("Amount of changes done: " + info.changes);
+    console.log("Last inserted ID: " + info.lastInsertRowid);
+}
+
 exports.All = All;
 exports.allInColumn = allInColumn;
 exports.OneWithId = OneWithId;
@@ -77,3 +85,4 @@ exports.Insert = Insert;
 exports.multipleInsert = multipleInsert;
 exports.Delete = Delete;
 exports.deleteAll = deleteAll;
+exports.update = update;

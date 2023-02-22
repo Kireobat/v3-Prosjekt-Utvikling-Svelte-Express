@@ -38,6 +38,63 @@ app.post('/upload', (req, res) => {
 	res.redirect("http://localhost:5173/")
 });
 
+// CHANGE INFO
+
+app.post('/change-username', (req, res) => {
+	console.log("Changing username")
+
+	let data = req.body;
+
+	let userToChange = data.username;
+
+	console.log("New username: "+ data.newUsername)
+
+	if (JSON.stringify(dbF.allInColumn("users","username")).includes(data.newUsername)) {
+		return res.status(400).json({message: "Username already in use"})
+	  }
+
+	dbF.update("users", "username", userToChange, "username", data.newUsername);
+
+	res.clearCookie('username');
+	res.cookie('username', data.newUsername);
+	res.redirect("http://localhost:5173/")
+});
+
+app.post('/change-email', (req, res) => {
+	console.log("Changing email")
+
+	let data = req.body;
+
+	let userToChange = data.username;
+
+	console.log("New email: "+ data.newEmail)
+
+	if (JSON.stringify(dbF.allInColumn("users","email")).includes(data.newEmail)) {
+		return res.status(400).json({message: "Email already in use"})
+	}
+
+	dbF.update("users", "username", userToChange, "email", data.newEmail);
+
+	res.redirect("http://localhost:5173/")
+});
+
+app.post('/delete-account', (req, res) => {
+	console.log("Deleting account")
+
+	let data = req.body;
+
+	let userToDelete = data.username;
+
+	console.log("Username: "+ userToDelete)
+
+	dbF.Delete("users", "username", userToDelete);
+
+	res.clearCookie('loggedIn');
+	res.clearCookie('username');
+
+	res.redirect("http://localhost:5173/")
+});
+
 
 app.get('/', (req, res) => {
 	res.status(200).json({

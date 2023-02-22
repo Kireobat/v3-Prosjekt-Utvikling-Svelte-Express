@@ -103,7 +103,7 @@
     {#if profileOpen}
       <div class="profileMain">
         <button on:click={openProfile}><div><div class="cross1"></div><div class="cross2"></div></div></button>
-        <div><Profile /></div>
+        <div><Profile/></div>
       </div>
     {/if}
   </div>
