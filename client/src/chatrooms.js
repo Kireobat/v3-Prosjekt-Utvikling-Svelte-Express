@@ -1,7 +1,7 @@
 import './app.css'
-import Shop from './Shop.svelte';
+import Chatrooms from './Chatrooms.svelte';
 
-const app = new Shop({
+const app = new Chatrooms({
     target: document.getElementById('app')
 });
 

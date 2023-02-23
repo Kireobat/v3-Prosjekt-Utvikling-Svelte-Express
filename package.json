@@ -9,7 +9,7 @@
     "server": "nodemon src/index.js",
     "client": "cd client && yarn run dev",
     "dev": "concurrently \"yarn run server\" \"yarn run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false cd client && npm install && npm run build"
+    "build": "cd client && yarn run build"
   },
   "repository": {
     "type": "git",

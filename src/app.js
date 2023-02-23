@@ -31,17 +31,27 @@ app.use(cors());
 
 // Routing and Handlers
 
-app.use(express.static(path.join(__dirname, 'client')));
+// Serve static files from the "dist" directory
+app.use(express.static(path.join(__dirname, '../client', 'dist')));
+
+app.get('/', (req, res) => {
+	res.sendFile(path.join(__dirname, '../client', 'dist', 'index.html'));
+});
 
 app.get('/shop', (req, res) => {
-	res.sendFile(path.join(__dirname, 'client', 'shop.html'));
+	res.sendFile(path.join(__dirname, '../client', 'dist', 'shop.html'));
+  });
+
+app.get('/chatrooms', (req, res) => {
+	res.sendFile(path.join(__dirname, '../client', 'dist', 'chatrooms.html'));
 });
+
 
 
 app.post('/upload', (req, res) => {
 	console.log(req.query.filename);
 
-	res.redirect("http://localhost:5173/")
+	res.redirect("http://localhost:5678/")
 });
 
 // CHANGE INFO
@@ -63,7 +73,7 @@ app.post('/change-username', (req, res) => {
 
 	res.clearCookie('username');
 	res.cookie('username', data.newUsername);
-	res.redirect("http://localhost:5173/")
+	res.redirect("http://localhost:5678/")
 });
 
 app.post('/change-email', (req, res) => {
@@ -81,7 +91,7 @@ app.post('/change-email', (req, res) => {
 
 	dbF.update("users", "username", userToChange, "email", data.newEmail);
 
-	res.redirect("http://localhost:5173/")
+	res.redirect("http://localhost:5678/")
 });
 
 app.post('/delete-account', (req, res) => {
@@ -98,20 +108,13 @@ app.post('/delete-account', (req, res) => {
 	res.clearCookie('loggedIn');
 	res.clearCookie('username');
 
-	res.redirect("http://localhost:5173/")
-});
-
-
-app.get('/', (req, res) => {
-	res.status(200).json({
-		message: '📦 Svelte Express Boilerplate 📦',
-	});
+	res.redirect("http://localhost:5678/")
 });
 
 app.get('/logout', (req, res) => {
 	res.clearCookie('loggedIn');
 	res.clearCookie('username');
-	res.redirect("http://localhost:5173/");
+	res.redirect("http://localhost:5678/");
 });
 
 app.post('/login', (req, res) => {
@@ -159,7 +162,7 @@ app.post('/login', (req, res) => {
 	}
 
   
-	res.redirect("http://localhost:5173/");
+	res.redirect("http://localhost:5678/");
   
 	return;
   
@@ -201,7 +204,7 @@ app.post('/login', (req, res) => {
 	res.cookie('loggedIn', true);
 	res.cookie('username', username.username);
   
-	res.redirect("http://localhost:5173/")
+	res.redirect("http://localhost:5678/")
   
 	console.log("test")
   });
