@@ -31,6 +31,12 @@ app.use(cors());
 
 // Routing and Handlers
 
+app.use(express.static(path.join(__dirname, 'client')));
+
+app.get('/shop', (req, res) => {
+	res.sendFile(path.join(__dirname, 'client', 'shop.html'));
+});
+
 
 app.post('/upload', (req, res) => {
 	console.log(req.query.filename);
