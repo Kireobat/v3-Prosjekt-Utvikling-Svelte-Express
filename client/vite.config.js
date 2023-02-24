@@ -10,7 +10,8 @@ export default defineConfig({
       input: {
         main: 'index.html',
         shop: 'shop.html',
-        chatrooms: 'chatrooms.html'
+        chatrooms: 'chatrooms.html',
+        chatroom: 'chatroom.html'
       }
     }
   },
@@ -35,6 +36,12 @@ export default defineConfig({
       template: 'chatrooms.html',
       filename: 'chatrooms.html',
       title: 'Chatrooms'
+    },
+    chatroom : {
+      entry: 'src/chatroom.js',
+      template: 'chatroom.html',
+      filename: 'chatroom.html',
+      title: 'Chatroom'
     }
   }
 });

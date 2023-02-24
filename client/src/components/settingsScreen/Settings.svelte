@@ -7,7 +7,7 @@
 
     const items = ["Profile", "Account", "Security", "Accessibility", "Notifications"]
 
-    let activePage = "Profile";
+    let activePage = "Account";
 
     const changePage = (e) => {
         activePage = e.target.innerHTML;
@@ -19,7 +19,6 @@
     <div class="signInMainDiv">
         <div class="menu">
             <div class="itemList">
-
                 {#each items as item}
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <h2 class="item {item}" on:click={changePage}>{item}</h2>

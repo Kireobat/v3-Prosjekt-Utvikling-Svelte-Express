@@ -27,6 +27,20 @@ allInColumn = (table,column) => {
     return result
 }
 
+multipleAllInColumn = (table, columns) => {
+    result = []
+    console.log("all entries in columns:",columns);
+    const sql = db.prepare("SELECT "+columns.join(",")+" FROM "+table);
+    const rows = sql.all();
+
+    for (const row of rows) {
+        console.log(row);
+        result.push(row);
+    }
+    return result
+
+}
+
 OneWithId = (id) => {
     console.log("One with ID:");
     const sql = db.prepare("SELECT * FROM msgTable WHERE id = ?");
@@ -86,3 +100,4 @@ exports.multipleInsert = multipleInsert;
 exports.Delete = Delete;
 exports.deleteAll = deleteAll;
 exports.update = update;
+exports.multipleAllInColumn = multipleAllInColumn;

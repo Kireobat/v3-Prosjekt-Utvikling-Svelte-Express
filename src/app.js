@@ -54,6 +54,88 @@ app.post('/upload', (req, res) => {
 	res.redirect("http://localhost:5678/")
 });
 
+app.post('/create-chatroom', (req, res) => {
+
+	let data = req.body;
+
+	if (data.name == "") {
+		return res.status(400).json({message: "Please provide a name for the chatroom"})
+	}
+	if (data.desc == "") {
+		return res.status(400).json({message: "Please provide a description for the chatroom"})
+	}
+
+	if (JSON.stringify(dbF.allInColumn("chatrooms","name")).includes(data.name)) {
+		return res.status(400).json({message: "Chatroom already exists"})
+	}
+
+	dbF.multipleInsert("chatrooms", ["name", "desc"], [data.name, data.desc]);
+
+	let statment = db.prepare("SELECT id FROM chatrooms WHERE name = ?");
+	chatroomId = statment.get(data.name);
+	console.log(chatroomId)
+
+	statment = db.prepare("SELECT id FROM categories WHERE category = ?")
+	categoryId = statment.get(data.category);
+	console.log(categoryId)
+
+	dbF.multipleInsert("CategoryToChatroom", ["category_id","chatroom_id"], [categoryId.id, chatroomId.id])
+
+	dbF.multipleInsert("chatrooms", ["name", "desc"], [data.name, data.desc]);
+
+	res.redirect("http://localhost:5678/chatrooms")
+})
+
+app.get('/api/chatrooms', async (req, res) => {
+	try {
+		const chatrooms = await dbF.multipleAllInColumn("chatrooms", ["name","desc"]);
+		res.json(chatrooms);
+	} catch (error) {
+		console.log(error);
+		res.status(500).send('Server error')
+	}
+})
+
+app.post('/api/chatrooms/:name/join', (req,res) =>{
+	const {name} = req.params;
+	const {username} = req.body;
+
+	let statment = db.prepare("SELECT id FROM chatrooms WHERE name = ?");
+	chatroomId = statment.get(name);
+	console.log(name)
+	console.log(chatroomId)
+
+	statment = db.prepare("SELECT id FROM users WHERE username = ?")
+	userId = statment.get(username);
+
+	dbF.multipleInsert("user_chatrooms", ["user_id","chatroom_id"], [userId.id, chatroomId.id])
+
+	res.redirect('/')
+})
+
+app.get('/api/chatrooms/:name', async (req, res) => {
+
+	try {
+		const {name} = req.params;
+		let statment = db.prepare("SELECT desc FROM chatrooms WHERE name = ?");
+		desc = statment.get(name);
+		res.json(desc);
+	} catch (error) {
+		console.log(error);
+		res.status(500).send('Server error')
+	}
+})
+
+
+app.get('/chatrooms/:name', async (req, res) => {
+	const name = req.params.name;
+
+	res.cookie('chatroom', name);
+	
+	res.sendFile(path.join(__dirname, '../client', 'dist', 'chatroom.html'));	
+})
+
+
 // CHANGE INFO
 
 app.post('/change-username', (req, res) => {
