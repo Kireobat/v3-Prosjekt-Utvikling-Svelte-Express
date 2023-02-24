@@ -49,7 +49,14 @@ onMount(async () => {
         <p>No members in chatroom</p>
       {/if}
     </ul>
-    <h2>{data.messages}</h2>
+
+    {#if data.desc && data.messages}
+    {#each data.messages as message}
+      <li>{message.message}</li>
+    {/each}
+  {:else}
+    <p>No members in chatroom</p>
+  {/if}
 
     <form action="/api/chatroom/send-message/{chatroom}" method="post">
       <input type="hidden" value="{username}" name="username">
