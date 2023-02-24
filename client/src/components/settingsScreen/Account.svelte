@@ -30,7 +30,7 @@ let promtDelete = false;
             <div>
                 <p>Are you sure you want to delete your account "<span style="font-weight: 700;">{username}</span>"?</p>
                 <div style="display:flex; justify-content:space-evenly;">
-                <form action="http://localhost:5678/delete-account" method="POST">
+                <form action="http://localhost:5678/api/delete-account" method="POST">
                     <input type="text" value="{username}" readonly name="username" style="display:none;">
                     <button type="submit" style="background-color: red;">Yes</button>  
                 </form>
@@ -53,7 +53,7 @@ let promtDelete = false;
                     </form>
                 {/if}
                 {#if (option == options[1])}
-                    <form action="http://localhost:5678/change-email" method="post">
+                    <form action="http://localhost:5678/api/change-email" method="post">
                         <input type="text" value="{username}" readonly name="username" style="display:none;">
                         <input type="email" name="newEmail" placeholder="Enter your new email">
                         <button type="submit">Change</button>  

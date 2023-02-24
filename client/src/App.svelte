@@ -28,19 +28,37 @@
     <h1>Hello, {username}</h1>
 
     <div class="nav">
+      <a href="/chatrooms">
+        <div>
+          All chatrooms
+        </div>
+      </a>
+      <a href="/chatrooms/joined">
+        <div>
+          Your chatrooms
+        </div>
+      </a>
+      <a href="/shop">
+        <div>
+          Shop
+        </div>
+      </a>
+      <a href="/friends">
+        <div>
+          Friends list
+        </div>
+      </a>
+      <a href="/profile/inventory">
+        <div>
+          Inventory
+        </div>
+      </a>
+    </div>
+
+    <div class="news">
       <div>
-        <a href="/chatrooms">All chatrooms</a>
-      </div>
-      <div>
-        <a href="/chatrooms">Your chatrooms</a>
-      </div>
-      <div>
-        <a href="/chatrooms">Shop</a>
-      </div><div>
-        <a href="/chatrooms">Friends list</a>
-      </div>
-      <div>
-        <a href="/chatrooms"></a>
+        <h2>No news</h2>
+        <p>There is no news yet...</p>
       </div>
     </div>
 
@@ -63,7 +81,31 @@
   }
   .nav {
     display: grid;
-    grid-template-columns: minmax(100px, 1fr) 3fr;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     background-color: var(--accentColor);
+  }
+  .nav > a > div {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid var(--accentColor2);
+    border-radius: 5px;
+    margin: 10px;
+    background-color: var(--accentColor2);
+    color: var(--textColor);
+    font-weight: 700;
+  }
+  .news {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+  .news > div {
+    padding: 10px;
+    text-align: center;
+    border: 4px solid var(--accentColor2);
+    border-radius: 5px;
+    margin: 10px;
+    background-color: var(--mainColor);
+    color: var(--textColor);
+    font-weight: 700;
   }
 </style>

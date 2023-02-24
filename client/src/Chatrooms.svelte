@@ -63,7 +63,7 @@ import ChatroomList from "./components/ChatroomList.svelte";
   <button on:click={createChatroom}>Make a new chatroom</button>
 
   <div style="display: {createChatroomMenu};">
-    <form action="/create-chatroom" method="post">
+    <form action="/api/create-chatroom" method="post">
       <input type="text" value="{username}" name="owner" readonly style="display:none;"/>
       <input type="text" placeholder="Chatroom name" name="name"/>
       <select name="category" placeholder="Choose category">
@@ -100,7 +100,7 @@ import ChatroomList from "./components/ChatroomList.svelte";
 
 .chatroomListContainer {
   display: grid;
-  grid-template-columns: minmax(100px, 1fr) 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))
 }
 
 </style>

@@ -11,7 +11,8 @@ export default defineConfig({
         main: 'index.html',
         shop: 'shop.html',
         chatrooms: 'chatrooms.html',
-        chatroom: 'chatroom.html'
+        chatroom: 'chatroom.html',
+        joined: 'joined.html'
       }
     }
   },
@@ -42,6 +43,12 @@ export default defineConfig({
       template: 'chatroom.html',
       filename: 'chatroom.html',
       title: 'Chatroom'
+    },
+    joined : {
+      entry: 'src/joined.js',
+      template: 'joined.html',
+      filename: 'joined.html',
+      title: 'Joined'
     }
   }
 });

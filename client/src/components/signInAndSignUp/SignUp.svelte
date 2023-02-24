@@ -5,7 +5,7 @@
 <article>
     <div class="signUpDiv">
         <h1>Sign Up</h1>
-        <form  action="http://localhost:5678/register" method="POST">
+        <form  action="http://localhost:5678/api/register" method="POST">
             <div class="formLine">
                 <label for="username">Username</label>
                 <input type="text" name="username" id="username" maxlength="16" placeholder="Max 16 characters"/>

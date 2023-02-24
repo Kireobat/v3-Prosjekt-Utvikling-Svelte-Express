@@ -62,7 +62,7 @@ let loggedIn = false;
     
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <!-- svelte-ignore a11y-missing-attribute -->
-          <a href="http://localhost:5678/logout">
+          <a href="http://localhost:5678/api/logout">
             <div class="openLogin">
               <p>Log out</p>
             </div>

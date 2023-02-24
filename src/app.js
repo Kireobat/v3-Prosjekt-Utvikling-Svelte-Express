@@ -7,15 +7,13 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const hashing = require('./hashing.js');
-const dbF = require('./dbFunctions.js');
-const sqlite3 = require('better-sqlite3');
-const db = sqlite3('database.db', {verbose: console.log});
+
+const api = require('./api/api.js');
 
 // Boilerplate code
 const app = express();
 
-const api = require('./api');
+const api2 = require('./api');
 const { notFound, errorHandler } = require('./middlewares/errors.middleware');
 
 if (process.env.NODE_ENV === 'production') {
@@ -28,8 +26,6 @@ if (process.env.NODE_ENV === 'production') {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
-
-// Routing and Handlers
 
 // Serve static files from the "dist" directory
 app.use(express.static(path.join(__dirname, '../client', 'dist')));
@@ -47,255 +43,78 @@ app.get('/chatrooms', (req, res) => {
 });
 
 
+/**
+ * ==========================
+ * ???========API=========???
+ * ==========================
+ */
 
-app.post('/upload', (req, res) => {
-	console.log(req.query.filename);
-
-	res.redirect("http://localhost:5678/")
+app.post('/api/upload', (req, res) => {
+	
 });
 
-app.post('/create-chatroom', (req, res) => {
-
-	let data = req.body;
-
-	if (data.name == "") {
-		return res.status(400).json({message: "Please provide a name for the chatroom"})
-	}
-	if (data.desc == "") {
-		return res.status(400).json({message: "Please provide a description for the chatroom"})
-	}
-
-	if (JSON.stringify(dbF.allInColumn("chatrooms","name")).includes(data.name)) {
-		return res.status(400).json({message: "Chatroom already exists"})
-	}
-
-	dbF.multipleInsert("chatrooms", ["name", "desc"], [data.name, data.desc]);
-
-	let statment = db.prepare("SELECT id FROM chatrooms WHERE name = ?");
-	chatroomId = statment.get(data.name);
-	console.log(chatroomId)
-
-	statment = db.prepare("SELECT id FROM categories WHERE category = ?")
-	categoryId = statment.get(data.category);
-	console.log(categoryId)
-
-	dbF.multipleInsert("CategoryToChatroom", ["category_id","chatroom_id"], [categoryId.id, chatroomId.id])
-
-	dbF.multipleInsert("chatrooms", ["name", "desc"], [data.name, data.desc]);
-
-	res.redirect("http://localhost:5678/chatrooms")
+app.post('/api/create-chatroom', (req, res) => {
+	api.createChatroom(req, res);
 })
 
 app.get('/api/chatrooms', async (req, res) => {
-	try {
-		const chatrooms = await dbF.multipleAllInColumn("chatrooms", ["name","desc"]);
-		res.json(chatrooms);
-	} catch (error) {
-		console.log(error);
-		res.status(500).send('Server error')
-	}
+	api.getChatrooms(req, res);
 })
 
 app.post('/api/chatrooms/:name/join', (req,res) =>{
-	const {name} = req.params;
-	const {username} = req.body;
-
-	let statment = db.prepare("SELECT id FROM chatrooms WHERE name = ?");
-	chatroomId = statment.get(name);
-	console.log(name)
-	console.log(chatroomId)
-
-	statment = db.prepare("SELECT id FROM users WHERE username = ?")
-	userId = statment.get(username);
-
-	dbF.multipleInsert("user_chatrooms", ["user_id","chatroom_id"], [userId.id, chatroomId.id])
-
-	res.redirect('/')
+	api.joinChatroom(req, res);
 })
 
 app.get('/api/chatrooms/:name', async (req, res) => {
-
-	try {
-		const {name} = req.params;
-		let statment = db.prepare("SELECT desc FROM chatrooms WHERE name = ?");
-		desc = statment.get(name);
-		res.json(desc);
-	} catch (error) {
-		console.log(error);
-		res.status(500).send('Server error')
-	}
+	api.getChatroomDesc(req, res);
 })
-
 
 app.get('/chatrooms/:name', async (req, res) => {
-	const name = req.params.name;
-
-	res.cookie('chatroom', name);
-	
-	res.sendFile(path.join(__dirname, '../client', 'dist', 'chatroom.html'));	
+	api.enterChatroom(req, res);
 })
 
-
-// CHANGE INFO
-
-app.post('/change-username', (req, res) => {
-	console.log("Changing username")
-
-	let data = req.body;
-
-	let userToChange = data.username;
-
-	console.log("New username: "+ data.newUsername)
-
-	if (JSON.stringify(dbF.allInColumn("users","username")).includes(data.newUsername)) {
-		return res.status(400).json({message: "Username already in use"})
-	  }
-
-	dbF.update("users", "username", userToChange, "username", data.newUsername);
-
-	res.clearCookie('username');
-	res.cookie('username', data.newUsername);
-	res.redirect("http://localhost:5678/")
+app.post('/api/change-username', (req, res) => {
+	api.changeUsername(req, res);
 });
 
-app.post('/change-email', (req, res) => {
-	console.log("Changing email")
-
-	let data = req.body;
-
-	let userToChange = data.username;
-
-	console.log("New email: "+ data.newEmail)
-
-	if (JSON.stringify(dbF.allInColumn("users","email")).includes(data.newEmail)) {
-		return res.status(400).json({message: "Email already in use"})
-	}
-
-	dbF.update("users", "username", userToChange, "email", data.newEmail);
-
-	res.redirect("http://localhost:5678/")
+app.post('/api/change-email', (req, res) => {
+	api.changeEmail(req, res);
 });
 
-app.post('/delete-account', (req, res) => {
-	console.log("Deleting account")
-
-	let data = req.body;
-
-	let userToDelete = data.username;
-
-	console.log("Username: "+ userToDelete)
-
-	dbF.Delete("users", "username", userToDelete);
-
-	res.clearCookie('loggedIn');
-	res.clearCookie('username');
-
-	res.redirect("http://localhost:5678/")
+app.post('/api/delete-account', (req, res) => {
+	api.deleteAccount(req, res);
 });
 
-app.get('/logout', (req, res) => {
-	res.clearCookie('loggedIn');
-	res.clearCookie('username');
-	res.redirect("http://localhost:5678/");
+app.get('/api/logout', (req, res) => {
+	api.logout(req, res);
 });
 
-app.post('/login', (req, res) => {
-
-	console.log("User logging in")
-
-	// info submitted by user
-	const { email, password } = req.body;
-  
-	// info from database
-	let dbEmail = dbF.allInColumn("users", "email");
-  
-	if (!JSON.stringify(dbEmail).includes(email)){
-		return res.status(400).json({message: "Email or password is wrong"})
-	  }
-	let statment = db.prepare("SELECT password FROM users WHERE email = ?");
-	let dbPass = statment.get(email); // gets password from db
-  
-	statment = db.prepare("SELECT salt FROM users WHERE email = ?");
-	let salt = statment.get(email); // gets password from db
-  
-	console.log("Password from db: "+dbPass.password)
-	console.log("Password from user: "+hashing.hashString(password, salt))
-  
-	// compare password
-	if (!hashing.compareHash(password, dbPass.password)) {
-	  return res.status(400).json({message: "Email or password is wrong"})
-	}
-	
-	statment = db.prepare("SELECT username FROM users WHERE email = ?");
-	let username = statment.get(email); // gets password from db
-  
-	console.log("username: "+ username.username);
-
-	res.cookie('loggedIn', true);
-	res.cookie('username', username.username);
-
-	let isAdmin;
-
-	statment = db.prepare("SELECT isAdmin FROM users WHERE email = ?");
-	isAdmin = statment.get(email); // checks if user is admin
-
-	if (isAdmin.isAdmin == 1) {
-		res.cookie('isAdmin', true);
-	}
-
-  
-	res.redirect("http://localhost:5678/");
-  
-	return;
-  
+app.post('/api/login', (req, res) => {
+	api.login(req, res);
   });
 
-  //------------------------------------------------
+app.post('/api/register', (req, res) => {
+	api.register(req, res);
+});
 
-  app.post('/register', (req, res) => {
+app.get('/api/get-joined-chatrooms/:username', async (req, res) => {
+	api.getJoinedChatrooms(req, res);
+})
 
-	console.log("User registering")
-  
-	// info submitted by user
-	const { username, email, password, password2 } = req.body;
-  
-	// check if all fields are filled and valid
-  
-	if (username == "" || email == "" || password == "") {
-	  return res.status(400).json({message: "Please provide a username, email and password"})
-	}
-  
-	if (JSON.stringify(dbF.allInColumn("users","email")).includes(email)) {
-	  return res.status(400).json({message: "Email already in use"})
-	}
-  
-	if (JSON.stringify(dbF.allInColumn("users","username")).includes(username)) {
-	  return res.status(400).json({message: "Username already in use"})
-	}
-  
-	if (password != password2) {
-	  return res.status(400).json({message: "Passwords do not match"})
-	}
-  
-	let hashResult = hashing.hashString(password);
-	let hashedPass = hashResult.hash;
-	let salt = hashResult.salt;
-  
-	dbF.multipleInsert("users", ["username", "email", "password", "salt"], [username, email, hashedPass, salt]);
-  
-	res.cookie('loggedIn', true);
-	res.cookie('username', username.username);
-  
-	res.redirect("http://localhost:5678/")
-  
-	console.log("test")
-  });
-  
+app.get('/api/chatroom/info/:name', async (req, res) => {
+	api.getChatroomInfo(req, res);
+});
 
-  dbF.All("users");
+app.get('/api/chatroom/:name/messages', async (req, res) => {
+	api.getChatroomMessages(req, res);
+});
+
+app.post('/api/chatroom/send-message/:chatroom', (req, res) => {
+	api.sendMessage(req, res);
+});
 
 // Boilerplate code
-app.use('/api/v1', api);
+app.use('/api/v1', api2);
 app.use(notFound);
 app.use(errorHandler);
 
