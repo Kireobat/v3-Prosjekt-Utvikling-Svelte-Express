@@ -21,7 +21,7 @@ const changeUsername = (req, res) => {
 
 	res.clearCookie('username');
 	res.cookie('username', data.newUsername);
-	res.redirect("http://localhost:5678/")
+	res.redirect("/")
 }
 
 const changeEmail = (req, res) => {
@@ -39,7 +39,7 @@ const changeEmail = (req, res) => {
 
 	dbF.update("users", "username", userToChange, "email", data.newEmail);
 
-	res.redirect("http://localhost:5678/")
+	res.redirect("/")
 };
 
 const deleteAccount = (req, res) => {
@@ -56,13 +56,13 @@ const deleteAccount = (req, res) => {
 	res.clearCookie('loggedIn');
 	res.clearCookie('username');
 
-	res.redirect("http://localhost:5678/")
+	res.redirect("/")
 }
 
 const logout = (req, res) => {
     res.clearCookie('loggedIn');
 	res.clearCookie('username');
-	res.redirect("http://localhost:5678/");
+	res.redirect("/");
 }
 
 const login = (req, res) => {
@@ -109,7 +109,7 @@ const login = (req, res) => {
 	}
 
   
-	res.redirect("http://localhost:5678/");
+	res.redirect("/");
   
 	return;
 }
@@ -147,7 +147,7 @@ const register = (req, res) => {
 	res.cookie('loggedIn', true);
 	res.cookie('username', username.username);
   
-	res.redirect("http://localhost:5678/")
+	res.redirect("/")
 }
 
 const getChatroomDesc = async (req, res) => {
@@ -200,7 +200,7 @@ const createChatroom = (req, res) => {
 
 	dbF.multipleInsert("chatrooms", ["name", "desc"], [data.name, data.desc]);
 
-	res.redirect("http://localhost:5678/chatrooms/"+data.name)
+	res.redirect("/chatrooms/"+data.name)
 }
 
 const joinChatroom = (req, res) => {
@@ -217,7 +217,7 @@ const joinChatroom = (req, res) => {
 
 	dbF.multipleInsert("user_chatrooms", ["user_id","chatroom_id"], [userId.id, chatroomId.id])
 
-	res.redirect('http://localhost:5678/chatrooms/'+name)
+	res.redirect('/chatrooms/'+name)
 }
 
 const enterChatroom = async (req, res) => {
@@ -244,7 +244,7 @@ const enterChatroom = async (req, res) => {
 const upload = (req, res) => {
     console.log(req.query.filename);
 
-	res.redirect("http://localhost:5678/")
+	res.redirect("/")
 }
 
 const getJoinedChatrooms = async (req, res) => {
