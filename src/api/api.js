@@ -376,7 +376,7 @@ const sendMessage = async (req, res) => {
 
 		statment.run(userId.id, chatroomId.id, message, date);
 
-		res.json({message: "Message sent"});
+		res.redirect("/chatrooms/"+chatroom);
 	} catch (err) {
 		console.log(err);
 		res.status(500).send('Server error')
