@@ -5,7 +5,7 @@
 <article>
     <div class="signUpDiv">
         <h1>Sign Up</h1>
-        <form  action="http://localhost:5678/api/register" method="POST">
+        <form  action="/api/register" method="POST">
             <div class="formLine">
                 <label for="username">Username</label>
                 <input type="text" name="username" id="username" maxlength="16" placeholder="Max 16 characters"/>
@@ -23,7 +23,7 @@
                 <input type="password" name="password2" id="password2" />
             </div>
             <div>
-                <button class="signInBtn" type="submit">Sign In</button>
+                <button class="signInBtn" type="submit">Sign Up</button>
             </div>
         </form>
     </div>

@@ -53,7 +53,7 @@ let promtDelete = false;
                     </form>
                 {/if}
                 {#if (option == options[1])}
-                    <form action="http://localhost:5678/api/change-email" method="post">
+                    <form action="/api/change-email" method="post">
                         <input type="text" value="{username}" readonly name="username" style="display:none;">
                         <input type="email" name="newEmail" placeholder="Enter your new email">
                         <button type="submit">Change</button>  

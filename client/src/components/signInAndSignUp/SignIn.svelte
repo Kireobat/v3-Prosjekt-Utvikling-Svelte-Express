@@ -5,7 +5,7 @@
 <article>
     <div class="signInDiv">
         <h1>Sign In</h1>
-        <form action="http://localhost:5678/api/login" method="POST">
+        <form action="/api/login" method="POST">
             <div class="formLine">
                 <label for="email">Email</label>
                 <input type="email" name="email" id="email" />

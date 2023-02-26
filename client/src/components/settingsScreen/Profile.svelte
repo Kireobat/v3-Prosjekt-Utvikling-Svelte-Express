@@ -37,7 +37,7 @@
                     </form>
                 {/if}
                 {#if (option == options[1])}
-                    <form action="http://localhost:5678/api/change-username" method="post">
+                    <form action="/api/change-username" method="post">
                         <input type="text" name="newUsername" placeholder="Enter your new username">
                         <input type="text" value="{username}" readonly name="username" style="display:none;">
                         <button type="submit">Change</button>
