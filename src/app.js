@@ -113,6 +113,14 @@ app.post('/api/chatroom/send-message/:chatroom', (req, res) => {
 	api.sendMessage(req, res);
 });
 
+app.get('/api/products', (req, res) => {
+	api.getProducts(req, res);
+});
+
+app.post("/api/add-product", (req, res) => {
+	api.addProduct(req, res);
+});
+
 // Boilerplate code
 app.use('/api/v1', api2);
 app.use(notFound);

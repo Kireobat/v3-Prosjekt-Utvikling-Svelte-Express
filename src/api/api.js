@@ -4,8 +4,12 @@ const dbF = require('../dbFunctions.js');
 const sqlite3 = require('better-sqlite3');
 const db = sqlite3('database.db', {verbose: console.log});
 
+// Changes the username
+
 const changeUsername = (req, res) => {
     console.log("Changing username")
+
+	// gets data
 
 	let data = req.body;
 
@@ -13,19 +17,29 @@ const changeUsername = (req, res) => {
 
 	console.log("New username: "+ data.newUsername)
 
+	// checks if username is already in use
+
 	if (JSON.stringify(dbF.allInColumn("users","username")).includes(data.newUsername)) {
 		return res.status(400).json({message: "Username already in use"})
 	  }
 
+	// updates username in db
+
 	dbF.update("users", "username", userToChange, "username", data.newUsername);
+
+	// sets cookies
 
 	res.clearCookie('username');
 	res.cookie('username', data.newUsername);
 	res.redirect("/")
 }
 
+// Changes the email
+
 const changeEmail = (req, res) => {
     console.log("Changing email")
+
+	// gets data
 
 	let data = req.body;
 
@@ -33,9 +47,13 @@ const changeEmail = (req, res) => {
 
 	console.log("New email: "+ data.newEmail)
 
+	// checks if email is taken
+
 	if (JSON.stringify(dbF.allInColumn("users","email")).includes(data.newEmail)) {
 		return res.status(400).json({message: "Email already in use"})
 	}
+
+	// updates the db
 
 	dbF.update("users", "username", userToChange, "email", data.newEmail);
 
@@ -45,13 +63,19 @@ const changeEmail = (req, res) => {
 const deleteAccount = (req, res) => {
     console.log("Deleting account")
 
+	// gets data
+
 	let data = req.body;
 
 	let userToDelete = data.username;
 
 	console.log("Username: "+ userToDelete)
 
+	// deletes user
+
 	dbF.Delete("users", "username", userToDelete);
+
+	// clears cookies
 
 	res.clearCookie('loggedIn');
 	res.clearCookie('username');
@@ -60,6 +84,8 @@ const deleteAccount = (req, res) => {
 }
 
 const logout = (req, res) => {
+
+	// clears cookies
     res.clearCookie('loggedIn');
 	res.clearCookie('username');
 	res.redirect("/");
@@ -73,6 +99,8 @@ const login = (req, res) => {
   
 	// info from database
 	let dbEmail = dbF.allInColumn("users", "email");
+
+	// checks if email exists in db
   
 	if (!JSON.stringify(dbEmail).includes(email)){
 		return res.status(400).json({message: "Email or password is wrong"})
@@ -383,7 +411,29 @@ const sendMessage = async (req, res) => {
 	}
 }
 
+const getProducts = async (req, res) => {
 
+	try {
+		const products = await dbF.multipleAllInColumn("products", ["name","desc","price"]);
+		res.json(products);
+	} catch (error) {
+		console.log(error);
+		res.status(500).send('Server error')
+	}
+}
+
+const addProduct = async (req, res) => {
+
+	try {
+		const {prodName, prodDesc, prodPrice} = req.body;
+		
+		await dbF.multipleInsert("products", ["name","desc","price"], [prodName, prodDesc, prodPrice]);
+		res.redirect("/shop");
+	} catch (error) {
+		console.log(error);
+		res.status(500).send('Server error')
+	}
+}
 
 exports.changeUsername = changeUsername;
 exports.changeEmail = changeEmail;
@@ -401,3 +451,5 @@ exports.getJoinedChatrooms = getJoinedChatrooms;
 exports.getChatroomInfo = getChatroomInfo;
 exports.getChatroomMessages = getChatroomMessages;
 exports.sendMessage = sendMessage;
+exports.getProducts = getProducts;
+exports.addProduct = addProduct;

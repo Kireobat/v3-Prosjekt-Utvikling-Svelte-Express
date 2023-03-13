@@ -47,7 +47,7 @@ let loggedIn = false;
     <div class="topbar">
         <div class="iconAndName">
           <img src="/Svelte_Logo.png" alt="Svelte logo" height=50px>
-          <h1>nettside</h1>
+          <h1>Discorder Nitro</h1>
         </div>
     
         {#if loggedIn}
