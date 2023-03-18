@@ -1,70 +1,92 @@
-
 <script>
-  import { onMount } from 'svelte';
-  
+  import { onMount } from "svelte";
+  import Topbar from "./components/Topbar.svelte";
+  import Message from "./components/chatroom/Messages.svelte";
+  import ChatroomInfo from "./components/chatroom/ChatroomInfo.svelte";
+  import SendMessage from "./components/chatroom/SendMessage.svelte";
+
   let data = {};
-  
+
   //get data for chatroom based on cookie
 
   let loggedIn = false;
-  let username = '';
-  let chatroom = '';
+  let username = "";
+  let chatroom = "";
 
-onMount(async () => {
+  onMount(async () => {
+    // Parse the "loggedIn" and "username" cookies
+    const cookies = document.cookie.split(";").map((cookie) => cookie.trim());
+    cookies.forEach((cookie) => {
+      const [name, value] = cookie.split("=");
+      if (name === "loggedIn") {
+        loggedIn = value === "true";
+      } else if (name === "username") {
+        username = value;
+      } else if (name === "chatroom") {
+        chatroom = value;
+      }
+    });
 
-  // Parse the "loggedIn" and "username" cookies
-  const cookies = document.cookie.split(';').map(cookie => cookie.trim());
-  cookies.forEach(cookie => {
-    const [name, value] = cookie.split('=');
-    if (name === 'loggedIn') {
-      loggedIn = value === 'true';
-    } else if (name === 'username') {
-      username = value;
-    } else if (name === 'chatroom') {
-      chatroom = value;
-    }
-  });
-
-    const res = await fetch("/api/chatroom/info/"+chatroom)
+    const res = await fetch("/api/chatroom/info/" + chatroom);
     data = await res.json();
+    data.userCount = data.users.length;
 
-    console.log(data)
-  })
-  
+    console.log(data);
+  });
 </script>
+
 <main>
-  {#await data}
-    <p>loading...</p>
-  {:then}
-  <p>data loaded</p>
-    <h1>{chatroom}</h1>
-    <p>{data.desc}</p>
-    <h2>Members</h2>
-    <ul>
-      {#if data.desc && data.users}
-        {#each data.users as member}
-          <li>{member}</li>
-        {/each}
-      {:else}
-        <p>No members in chatroom</p>
-      {/if}
-    </ul>
+  <Topbar />
+  {#if data}
+    <div class="parent">
+      <div class="messagesDiv">
+        {#if data.desc && data.messages}
+          {#each data.messages as message}
+            <Message {message} />
+          {/each}
+        {/if}
+      </div>
 
-    {#if data.desc && data.messages}
-    {#each data.messages as message}
-      <li>{message.message}</li>
-    {/each}
+      <div class="infoDiv">
+        <ChatroomInfo {data} />
+      </div>
+
+      <div class="sendMessageDiv" />
+      <SendMessage {username} {chatroom} />
+    </div>
   {:else}
-    <p>No members in chatroom</p>
+    <h1>Chatroom not found</h1>
   {/if}
-
-    <form action="/api/chatroom/send-message/{chatroom}" method="post">
-      <input type="hidden" value="{username}" name="username">
-      <input type="text" placeholder="Message" name="message" maxlength="280"/>
-      <button type="submit">Send</button>
-    </form>
-  {/await}
 </main>
-<style>
 
+<style>
+  :root {
+    --mainColor: #242424;
+    --accentColor: rgb(52, 52, 52);
+    --accentColor2: #fe3b00;
+    --textColor: white;
+  }
+
+  .parent {
+    height: 88.3vh;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+  }
+
+  .messagesDiv {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background-color: var(--accentColor);
+    grid-area: 1 / 1 / 7 / 8;
+  }
+  .infoDiv {
+    grid-area: 1 / 8 / 8 / 11;
+  }
+  .sendMessageDiv {
+    background-color: var(--accentColor);
+    grid-area: 8 / 1 / 8 / 8;
+  }
 </style>

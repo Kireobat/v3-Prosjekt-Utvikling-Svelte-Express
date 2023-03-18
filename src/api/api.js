@@ -2,6 +2,7 @@ const path = require('path');
 const hashing = require('../hashing.js');
 const dbF = require('../dbFunctions.js');
 const sqlite3 = require('better-sqlite3');
+const { time } = require('console');
 const db = sqlite3('database.db', {verbose: console.log});
 
 // Changes the username
@@ -325,7 +326,8 @@ const getChatroomInfo = async (req, res) => {
 		//get chatroom description
 		statment = db.prepare("SELECT desc FROM chatrooms WHERE id = ?");
 		desc = statment.get(chatroomId.id);
-		console.log("chatroom desc: "+JSON.stringify(desc))
+		console.log("chatroom desc: "+JSON.stringify(desc.desc))
+		desc = desc.desc
 
 		// get messages
 		statment = db.prepare("SELECT * FROM messages WHERE chatroom_id = ?");
@@ -363,7 +365,7 @@ const getChatroomInfo = async (req, res) => {
 		}
 		console.log(categories)
 
-		res.json({desc, messages: messages, users: users, categories: categories});
+		res.json({name, desc, messages: messages, users: users, categories: categories});
 	} catch (err) {
 		console.log(err);
 		res.status(500).send('Server error')
@@ -390,6 +392,8 @@ const sendMessage = async (req, res) => {
 		const {username, message} = req.body;
 		const {chatroom} = req.params;
 
+		console.log("message sending by: "+username)
+
 		let statment = db.prepare("SELECT id FROM users WHERE username = ?");
 		userId = statment.get(username);
 		console.log(userId)
@@ -398,11 +402,11 @@ const sendMessage = async (req, res) => {
 		chatroomId = statment.get(chatroom);
 		console.log(chatroomId)
 
-		let date = Date.now();
+		let timestamp = Date.now();
 
 		statment = db.prepare("INSERT INTO messages (user_id, chatroom_id, message, timestamp) VALUES (?, ?, ?, ?)");
 
-		statment.run(userId.id, chatroomId.id, message, date);
+		statment.run(userId.id, chatroomId.id, message, timestamp);
 
 		res.redirect("/chatrooms/"+chatroom);
 	} catch (err) {
